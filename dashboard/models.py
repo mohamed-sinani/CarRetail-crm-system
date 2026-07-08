@@ -1,6 +1,6 @@
-fromdjango.dbimportmodels
-classMarketingCampaign(models.Model):
-    classChannel(models.TextChoices):
+from django.db import models
+class MarketingCampaign(models.Model):
+    class Channel(models.TextChoices):
         WHATSAPP_STATUS="WHATSAPP_STATUS","WhatsApp Status"
         WHATSAPP_BROADCAST="WHATSAPP_BROADCAST","WhatsApp Broadcast"
         FACEBOOK="FACEBOOK","Facebook"
@@ -17,7 +17,7 @@ classMarketingCampaign(models.Model):
     replies=models.PositiveIntegerField(default=0)
     leads=models.PositiveIntegerField(default=0)
     created_at=models.DateTimeField(auto_now_add=True)
-    classMeta:
+    class Meta:
         ordering=["-created_at"]
-    def__str__(self):
+    def __str__(self):
         returnself.title

@@ -1,3 +1,3 @@
-fromdjango.appsimportAppConfig
-classAnnouncementsConfig(AppConfig):
+from django.apps import AppConfig
+class AnnouncementsConfig(AppConfig):
     name='announcements'

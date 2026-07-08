@@ -1,14 +1,14 @@
-fromdjango.dbimportmodels
-classVehicle(models.Model):
-    classStatus(models.TextChoices):
+from django.db import models
+class Vehicle(models.Model):
+    class Status(models.TextChoices):
         AVAILABLE="AVAILABLE","Available"
         RESERVED="RESERVED","Reserved"
         SOLD="SOLD","Sold"
-    classTransmission(models.TextChoices):
+    class Transmission(models.TextChoices):
         AUTOMATIC="AUTOMATIC","Automatic"
         MANUAL="MANUAL","Manual"
         CVT="CVT","CVT"
-    classFuelType(models.TextChoices):
+    class FuelType(models.TextChoices):
         PETROL="PETROL","Petrol"
         DIESEL="DIESEL","Diesel"
         HYBRID="HYBRID","Hybrid"
@@ -24,7 +24,7 @@ classVehicle(models.Model):
     image=models.FileField(upload_to="vehicles/",blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
-    classMeta:
+    class Meta:
         ordering=["brand","model","-year"]
-    def__str__(self):
-        returnf"{self.year} {self.brand} {self.model}"
+    def __str__(self):
+        return f"{self.year} {self.brand} {self.model}"

@@ -1,7 +1,7 @@
-fromdjango.dbimportmodels
-fromdjango.confimportsettings
-classDeal(models.Model):
-    classStage(models.TextChoices):
+from django.db import models
+from django.conf import settings
+class Deal(models.Model):
+    class Stage(models.TextChoices):
         NEW_LEAD="NEW_LEAD","New Lead"
         CONTACTED="CONTACTED","Contacted"
         NEGOTIATION="NEGOTIATION","Negotiation"
@@ -16,7 +16,7 @@ classDeal(models.Model):
     notes=models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
-    classMeta:
+    class Meta:
         ordering=["stage","-updated_at"]
-    def__str__(self):
-        returnf"{self.customer} - {self.vehicle}"
+    def __str__(self):
+        return f"{self.customer} - {self.vehicle}"

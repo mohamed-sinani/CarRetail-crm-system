@@ -1,5 +1,5 @@
-fromdjango.urlsimportpath
-from.viewsimportSaleCreateView,SaleDeleteView,SaleListView,SaleUpdateView
+from django.urls import path
+from .views import SaleCreateView,SaleDeleteView,SaleListView,SaleUpdateView
 app_name="sales"
 urlpatterns = [
     path("",SaleListView.as_view(),name="list"),

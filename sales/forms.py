@@ -1,8 +1,8 @@
-fromdjangoimportforms
-fromdjango.contrib.authimportget_user_model
-from.modelsimportSale
-classSaleForm(forms.ModelForm):
-    classMeta:
+from django import forms
+from django.contrib.auth import get_user_model
+from .models import Sale
+class SaleForm(forms.ModelForm):
+    class Meta:
         model=Sale
         fields=["vehicle","customer","salesperson","amount","payment_method","sale_date"]
         widgets = {
@@ -13,7 +13,7 @@ classSaleForm(forms.ModelForm):
             "payment_method":forms.Select(attrs={"class":"form-select"}),
             "sale_date":forms.DateInput(attrs={"class":"form-control","type":"date"}),
         }
-    def__init__(self,*args,**kwargs):
+    def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         User=get_user_model()
         self.fields["salesperson"].queryset = User.objects.filter(role=User.Role.SALES).order_by(

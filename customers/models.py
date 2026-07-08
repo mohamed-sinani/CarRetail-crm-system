@@ -1,6 +1,6 @@
-fromdjango.dbimportmodels
-fromdjango.confimportsettings
-classCustomer(models.Model):
+from django.db import models
+from django.conf import settings
+class Customer(models.Model):
     full_name=models.CharField(max_length=140)
     phone=models.CharField(max_length=30)
     email=models.EmailField(blank=True)
@@ -14,7 +14,7 @@ classCustomer(models.Model):
         limit_choices_to={"role":"SALES"},
     )
     created_at=models.DateTimeField(auto_now_add=True)
-    classMeta:
+    class Meta:
         ordering=["full_name"]
-    def__str__(self):
+    def __str__(self):
         returnself.full_name

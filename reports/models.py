@@ -1,6 +1,6 @@
-fromdjango.dbimportmodels
-classReportSnapshot(models.Model):
-    classReportType(models.TextChoices):
+from django.db import models
+class ReportSnapshot(models.Model):
+    class ReportType(models.TextChoices):
         SALES="SALES","Sales"
         INVENTORY="INVENTORY","Inventory"
         REVENUE="REVENUE","Revenue"
@@ -8,7 +8,7 @@ classReportSnapshot(models.Model):
     title=models.CharField(max_length=160)
     generated_at=models.DateTimeField(auto_now_add=True)
     payload=models.JSONField(default=dict,blank=True)
-    classMeta:
+    class Meta:
         ordering=["-generated_at"]
-    def__str__(self):
+    def __str__(self):
         returnself.title

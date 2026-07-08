@@ -1,36 +1,36 @@
-fromdjango.contribimportmessages
-fromdjango.urlsimportreverse_lazy
-fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
-fromaccounts.mixinsimportRoleRequiredMixin
-from.formsimportSaleForm
-from.modelsimportSale
-classSaleListView(RoleRequiredMixin,ListView):
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import CreateView,DeleteView,ListView,UpdateView
+from accounts.mixins import RoleRequiredMixin
+from .forms import SaleForm
+from .models import Sale
+class SaleListView(RoleRequiredMixin,ListView):
     allowed_roles=("ADMIN","SALES")
     model=Sale
     template_name="sales.html"
     context_object_name="sales"
-    defget_queryset(self):
-        returnSale.objects.select_related("vehicle","customer","salesperson")
-    defget_context_data(self,**kwargs):
+    def get_queryset(self):
+        return Sale.objects.select_related("vehicle","customer","salesperson")
+    def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Sales"
-        context["form"]=SaleForm(initial={"salesperson":self.request.userifself.request.user.role=="SALES"elseNone})
+        context["form"]=SaleForm(initial={"salesperson":self.request.user if self.request.user.role=="SALES" else None})
         returncontext
-classSaleCreateView(RoleRequiredMixin,CreateView):
+class SaleCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Sale
     form_class=SaleForm
     success_url=reverse_lazy("sales:list")
-    defform_valid(self,form):
+    def form_valid(self,form):
         messages.success(self.request,"Sale recorded and vehicle marked as sold.")
-        returnsuper().form_valid(form)
-classSaleUpdateView(RoleRequiredMixin,UpdateView):
+        return super().form_valid(form)
+class SaleUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN","SALES")
     model=Sale
     form_class=SaleForm
     template_name="form.html"
     success_url=reverse_lazy("sales:list")
-classSaleDeleteView(RoleRequiredMixin,DeleteView):
+class SaleDeleteView(RoleRequiredMixin,DeleteView):
     allowed_roles=("ADMIN",)
     model=Sale
     template_name="confirm_delete.html"

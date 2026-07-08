@@ -1,43 +1,43 @@
-fromdjango.contribimportmessages
-fromdjango.urlsimportreverse_lazy
-fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
-fromaccounts.mixinsimportRoleRequiredMixin
-from.formsimportDealForm
-from.modelsimportDeal
-classDealListView(RoleRequiredMixin,ListView):
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import CreateView,DeleteView,ListView,UpdateView
+from accounts.mixins import RoleRequiredMixin
+from .forms import DealForm
+from .models import Deal
+class DealListView(RoleRequiredMixin,ListView):
     allowed_roles=("ADMIN","SALES")
     model=Deal
     template_name="deals.html"
     context_object_name="deals"
-    defget_queryset(self):
-        returnDeal.objects.select_related("customer","vehicle","salesperson")
-    defget_context_data(self,**kwargs):
+    def get_queryset(self):
+        return Deal.objects.select_related("customer","vehicle","salesperson")
+    def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         deals_by_stage={}
-        forkey,labelinDeal.Stage.choices:
+        for key, label in Deal.Stage.choices:
             deals_by_stage[key] = {
                 "label":label,
-                "deals":[dealfordealincontext["deals"]ifdeal.stage==key],
+                "deals":[deal for deal in context["deals"] if deal.stage==key],
             }
         context["page_title"]="Deals"
-        context["form"]=DealForm(initial={"salesperson":self.request.userifself.request.user.role=="SALES"elseNone})
+        context["form"]=DealForm(initial={"salesperson":self.request.user if self.request.user.role=="SALES" else None})
         context["deals_by_stage"]=deals_by_stage
         returncontext
-classDealCreateView(RoleRequiredMixin,CreateView):
+class DealCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Deal
     form_class=DealForm
     success_url=reverse_lazy("deals:list")
-    defform_valid(self,form):
+    def form_valid(self,form):
         messages.success(self.request,"Deal added to the pipeline.")
-        returnsuper().form_valid(form)
-classDealUpdateView(RoleRequiredMixin,UpdateView):
+        return super().form_valid(form)
+class DealUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN","SALES")
     model=Deal
     form_class=DealForm
     template_name="form.html"
     success_url=reverse_lazy("deals:list")
-classDealDeleteView(RoleRequiredMixin,DeleteView):
+class DealDeleteView(RoleRequiredMixin,DeleteView):
     allowed_roles=("ADMIN",)
     model=Deal
     template_name="confirm_delete.html"

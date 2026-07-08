@@ -1,5 +1,5 @@
-fromdjango.urlsimportpath
-from.viewsimportVehicleCreateView,VehicleDeleteView,VehicleListView,VehicleUpdateView
+from django.urls import path
+from .views import VehicleCreateView,VehicleDeleteView,VehicleListView,VehicleUpdateView
 app_name="vehicles"
 urlpatterns = [
     path("",VehicleListView.as_view(),name="list"),

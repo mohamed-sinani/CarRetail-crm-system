@@ -1,11 +1,11 @@
-fromdjango.contrib.auth.viewsimportLoginView,LogoutView
-fromdjango.urlsimportreverse_lazy
-from.formsimportLoginForm
-classCRMLoginView(LoginView):
+from django.contrib.auth.views import LoginView,LogoutView
+from django.urls import reverse_lazy
+from .forms import LoginForm
+class CRMLoginView(LoginView):
     template_name="login.html"
     authentication_form=LoginForm
     redirect_authenticated_user=True
-    defget_success_url(self):
+    def get_success_url(self):
         returnreverse_lazy("dashboard:home")
-classCRMLogoutView(LogoutView):
+class CRMLogoutView(LogoutView):
     next_page=reverse_lazy("accounts:login")

@@ -1,7 +1,7 @@
-fromdjangoimportforms
-from.modelsimportDeal
-classDealForm(forms.ModelForm):
-    classMeta:
+from django import forms
+from .models import Deal
+class DealForm(forms.ModelForm):
+    class Meta:
         model=Deal
         fields=["customer","vehicle","salesperson","stage","expected_value","notes"]
         widgets = {

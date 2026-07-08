@@ -1,7 +1,7 @@
-fromdjangoimportforms
-from.modelsimportVehicle
-classVehicleForm(forms.ModelForm):
-    classMeta:
+from django import forms
+from .models import Vehicle
+class VehicleForm(forms.ModelForm):
+    class Meta:
         model=Vehicle
         fields=["brand","model","year","price","mileage","transmission","fuel_type","status","image"]
         widgets = {

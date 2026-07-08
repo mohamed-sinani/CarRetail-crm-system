@@ -1,12 +1,12 @@
-fromdjango.shortcutsimportrender,get_object_or_404
-fromvehicles.modelsimportVehicle
-fromdjango.db.modelsimportQ
-fromannouncements.modelsimportAnnouncement
-fromdashboard.modelsimportMarketingCampaign
-defhome(request):
+from django.shortcuts import render,get_object_or_404
+from vehicles.models import Vehicle
+from django.db.models import Q
+from announcements.models import Announcement
+from dashboard.models import MarketingCampaign
+def home(request):
     query=request.GET.get('q','')
     vehicles=Vehicle.objects.filter(status=Vehicle.Status.AVAILABLE)
-    ifquery:
+    if query:
         vehicles = vehicles.filter(
             Q(brand__icontains=query)|
             Q(model__icontains=query)
@@ -26,7 +26,7 @@ defhome(request):
         'announcements':announcements,
         'marketing_ads':marketing_ads,
     })
-defvehicle_detail(request,pk):
+def vehicle_detail(request,pk):
     vehicle=get_object_or_404(Vehicle,pk=pk,status=Vehicle.Status.AVAILABLE)
     related_vehicles = Vehicle.objects.filter(
         status=Vehicle.Status.AVAILABLE,brand=vehicle.brand

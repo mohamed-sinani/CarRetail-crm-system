@@ -1,3 +1,3 @@
-fromdjango.appsimportAppConfig
-classReportsConfig(AppConfig):
+from django.apps import AppConfig
+class ReportsConfig(AppConfig):
     name='reports'

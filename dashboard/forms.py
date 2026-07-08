@@ -1,7 +1,7 @@
-fromdjangoimportforms
-from.modelsimportMarketingCampaign
-classMarketingCampaignForm(forms.ModelForm):
-    classMeta:
+from django import forms
+from .models import MarketingCampaign
+class MarketingCampaignForm(forms.ModelForm):
+    class Meta:
         model=MarketingCampaign
         fields=["title","channel","message","whatsapp_phone","views","replies","leads"]
         widgets = {

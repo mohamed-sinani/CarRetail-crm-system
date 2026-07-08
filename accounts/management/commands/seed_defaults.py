@@ -1,7 +1,7 @@
-fromdjango.core.management.baseimportBaseCommand
-fromaccounts.signalsimportcreate_default_users
-classCommand(BaseCommand):
+from django.core.management.base import BaseCommand
+from accounts.signals import create_default_users
+class Command(BaseCommand):
     help="Create the default CRM users."
-    defhandle(self,*args,**options):
+    def handle(self,*args,**options):
         create_default_users()
         self.stdout.write(self.style.SUCCESS("Default CRM users are ready."))

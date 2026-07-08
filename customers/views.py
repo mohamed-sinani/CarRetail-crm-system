@@ -1,41 +1,41 @@
-fromdjango.contribimportmessages
-fromdjango.db.modelsimportQ
-fromdjango.urlsimportreverse_lazy
-fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
-fromaccounts.mixinsimportRoleRequiredMixin
-from.formsimportCustomerForm
-from.modelsimportCustomer
-classCustomerListView(RoleRequiredMixin,ListView):
+from django.contrib import messages
+from django.db.models import Q
+from django.urls import reverse_lazy
+from django.views.generic import CreateView,DeleteView,ListView,UpdateView
+from accounts.mixins import RoleRequiredMixin
+from .forms import CustomerForm
+from .models import Customer
+class CustomerListView(RoleRequiredMixin,ListView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
     template_name="contacts.html"
     context_object_name="customers"
-    defget_queryset(self):
+    def get_queryset(self):
         queryset=Customer.objects.select_related("assigned_salesperson").all()
         query=self.request.GET.get("q","")
-        ifquery:
+        if query:
             queryset=queryset.filter(Q(full_name__icontains=query)|Q(phone__icontains=query)|Q(email__icontains=query))
         returnqueryset
-    defget_context_data(self,**kwargs):
+    def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Contacts"
         context["form"]=CustomerForm()
         returncontext
-classCustomerCreateView(RoleRequiredMixin,CreateView):
+class CustomerCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
     form_class=CustomerForm
     success_url=reverse_lazy("customers:list")
-    defform_valid(self,form):
+    def form_valid(self,form):
         messages.success(self.request,"Customer profile saved.")
         returnsuper().form_valid(form)
-classCustomerUpdateView(RoleRequiredMixin,UpdateView):
+class CustomerUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
     form_class=CustomerForm
     template_name="form.html"
     success_url=reverse_lazy("customers:list")
-classCustomerDeleteView(RoleRequiredMixin,DeleteView):
+class CustomerDeleteView(RoleRequiredMixin,DeleteView):
     allowed_roles=("ADMIN",)
     model=Customer
     template_name="confirm_delete.html"

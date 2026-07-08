@@ -1,19 +1,19 @@
-fromdjangoimportforms
-fromdjango.contrib.auth.formsimportAuthenticationForm,UserCreationForm
-from.modelsimportUser
-classLoginForm(AuthenticationForm):
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
+from .models import User
+class LoginForm(AuthenticationForm):
     username=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Username or email"}))
     password=forms.CharField(widget=forms.PasswordInput(attrs={"class":"form-control","placeholder":"Password"}))
-    defclean(self):
+    def clean(self):
         username=self.cleaned_data.get("username")
-        ifusernameand"@"inusername:
+        if username and"@"in username:
             try:
                 self.cleaned_data["username"]=User.objects.get(email__iexact=username).username
-            exceptUser.DoesNotExist:
+            except User.DoesNotExist:
                 pass
         returnsuper().clean()
-classUserForm(UserCreationForm):
-    classMeta:
+class UserForm(UserCreationForm):
+    class Meta:
         model=User
         fields=["username","email","first_name","last_name","role","phone","password1","password2"]
         widgets = {

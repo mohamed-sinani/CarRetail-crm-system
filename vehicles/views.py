@@ -1,49 +1,49 @@
-fromdjango.contribimportmessages
-fromdjango.db.modelsimportQ
-fromdjango.urlsimportreverse_lazy
-fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
-fromaccounts.mixinsimportRoleRequiredMixin
-from.formsimportVehicleForm
-from.modelsimportVehicle
-classVehicleListView(RoleRequiredMixin,ListView):
+from django.contrib import messages
+from django.db.models import Q
+from django.urls import reverse_lazy
+from django.views.generic import CreateView,DeleteView,ListView,UpdateView
+from accounts.mixins import RoleRequiredMixin
+from .forms import VehicleForm
+from .models import Vehicle
+class VehicleListView(RoleRequiredMixin,ListView):
     allowed_roles=("ADMIN",)
     model=Vehicle
     template_name="vehicles.html"
     context_object_name="vehicles"
     paginate_by=12
-    defget_queryset(self):
+    def get_queryset(self):
         queryset=Vehicle.objects.all()
         query=self.request.GET.get("q","")
         status=self.request.GET.get("status","")
-        ifquery:
+        if query:
             queryset=queryset.filter(Q(brand__icontains=query)|Q(model__icontains=query))
-        ifstatus:
+        if status:
             queryset=queryset.filter(status=status)
         returnqueryset
-    defget_context_data(self,**kwargs):
+    def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Vehicles"
         context["form"]=VehicleForm()
         context["statuses"]=Vehicle.Status.choices
         returncontext
-classVehicleCreateView(RoleRequiredMixin,CreateView):
+class VehicleCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN",)
     model=Vehicle
     form_class=VehicleForm
     success_url=reverse_lazy("vehicles:list")
-    defform_valid(self,form):
+    def form_valid(self,form):
         messages.success(self.request,"Vehicle added to inventory.")
         returnsuper().form_valid(form)
-classVehicleUpdateView(RoleRequiredMixin,UpdateView):
+class VehicleUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN",)
     model=Vehicle
     form_class=VehicleForm
     template_name="form.html"
     success_url=reverse_lazy("vehicles:list")
-    defform_valid(self,form):
+    def form_valid(self,form):
         messages.success(self.request,"Vehicle updated.")
         returnsuper().form_valid(form)
-classVehicleDeleteView(RoleRequiredMixin,DeleteView):
+class VehicleDeleteView(RoleRequiredMixin,DeleteView):
     allowed_roles=("ADMIN",)
     model=Vehicle
     template_name="confirm_delete.html"
