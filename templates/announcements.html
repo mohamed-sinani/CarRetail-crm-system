@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">Internal updates</span><h1>Announcement</h1></div>
+    {% if user.is_admin_role or user.is_marketing_role %}<button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#announcementModal"><i class="bi bi-plus-lg"></i> New Announcement</button>{% endif %}
+</div>
+<div class="announcement-grid">
+    {% for announcement in announcements %}
+    <article class="panel announcement-card">
+        <span>{{ announcement.created_at|date:"d M Y" }}</span>
+        <h2>{{ announcement.title }}</h2>
+        <p>{{ announcement.message }}</p>
+        <div>
+            {% if user.is_admin_role or user.is_marketing_role %}<a class="small-link" href="{% url 'announcements:edit' announcement.pk %}">Edit</a><a class="small-link text-danger" href="{% url 'announcements:delete' announcement.pk %}">Delete</a>{% endif %}
+        </div>
+    </article>
+    {% empty %}<section class="panel"><p class="empty-state">No announcements posted.</p></section>{% endfor %}
+</div>
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" method="post" action="{% url 'announcements:add' %}">
+            {% csrf_token %}
+            <div class="modal-header"><h5 class="modal-title">New Announcement</h5><button class="btn-close" data-bs-dismiss="modal" type="button"></button></div>
+            <div class="modal-body">{{ form.as_p }}</div>
+            <div class="modal-footer"><button class="btn btn-accent" type="submit">Publish</button></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

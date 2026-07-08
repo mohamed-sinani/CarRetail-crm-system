@@ -1,0 +1,1 @@
+fromdjango.testimportTestCase

@@ -1,0 +1,29 @@
+<header class="crm-navbar">
+    <button class="icon-btn d-lg-none" type="button" data-sidebar-toggle aria-label="Open sidebar">
+        <i class="bi bi-list"></i>
+    </button>
+    <form class="nav-search" method="get">
+        <i class="bi bi-search"></i>
+        <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search inventory, contacts, deals">
+    </form>
+    <div class="nav-actions">
+        <button class="icon-btn" type="button" title="Notifications"><i class="bi bi-bell"></i></button>
+        <button class="icon-btn" type="button" title="Messages"><i class="bi bi-chat-dots"></i></button>
+        <div class="dropdown">
+            <button class="profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <span class="avatar">{{ user.username|first|upper }}</span>
+                <span class="d-none d-md-inline">{{ user.username }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><span class="dropdown-item-text text-muted">{{ user.get_role_display }}</span></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="dropdown-item" type="submit">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

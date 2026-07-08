@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel form-panel">
+    <h1 class="h4">Delete record</h1>
+    <p class="text-muted">This action will remove "{{ object }}" from the CRM.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Delete</button>
+        <a class="btn btn-light" href="{{ request.META.HTTP_REFERER|default:'/' }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

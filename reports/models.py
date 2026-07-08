@@ -1,0 +1,14 @@
+fromdjango.dbimportmodels
+classReportSnapshot(models.Model):
+    classReportType(models.TextChoices):
+        SALES="SALES","Sales"
+        INVENTORY="INVENTORY","Inventory"
+        REVENUE="REVENUE","Revenue"
+    report_type=models.CharField(max_length=20,choices=ReportType.choices)
+    title=models.CharField(max_length=160)
+    generated_at=models.DateTimeField(auto_now_add=True)
+    payload=models.JSONField(default=dict,blank=True)
+    classMeta:
+        ordering=["-generated_at"]
+    def__str__(self):
+        returnself.title

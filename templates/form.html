@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading"><h1>{{ page_title|default:"Edit Record" }}</h1></div>
+<section class="panel form-panel">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="d-flex gap-2">
+            <button class="btn btn-accent" type="submit">Save</button>
+            <a class="btn btn-light" href="{{ request.META.HTTP_REFERER|default:'/' }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

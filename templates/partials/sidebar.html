@@ -1,0 +1,23 @@
+<aside class="crm-sidebar" id="crmSidebar">
+    <div class="sidebar-brand">
+        <span class="brand-mark"><i class="bi bi-car-front-fill"></i></span>
+        <span>CarRetail</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard:home' %}" class="{% if page_title == 'Dashboard' %}active{% endif %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+        {% if user.role == 'ADMIN' or user.role == 'SALES' %}
+        <a href="{% url 'sales:list' %}" class="{% if page_title == 'Sales' %}active{% endif %}"><i class="bi bi-receipt"></i><span>Sales</span></a>
+        <a href="{% url 'deals:list' %}" class="{% if page_title == 'Deals' %}active{% endif %}"><i class="bi bi-kanban"></i><span>Deals</span></a>
+        <a href="{% url 'customers:list' %}" class="{% if page_title == 'Contacts' %}active{% endif %}"><i class="bi bi-people"></i><span>Contacts</span></a>
+        {% endif %}
+        {% if user.role == 'ADMIN' or user.role == 'MARKETING' %}
+        <a href="{% url 'dashboard:marketing' %}" class="{% if page_title == 'Marketing' %}active{% endif %}"><i class="bi bi-megaphone"></i><span>Marketing</span></a>
+        <a href="{% url 'announcements:list' %}" class="{% if page_title == 'Announcement' %}active{% endif %}"><i class="bi bi-bell"></i><span>Announcement</span></a>
+        {% endif %}
+        {% if user.role == 'ADMIN' %}
+        <a href="{% url 'vehicles:list' %}" class="{% if page_title == 'Vehicles' %}active{% endif %}"><i class="bi bi-car-front"></i><span>Vehicles</span></a>
+        <a href="{% url 'reports:list' %}" class="{% if page_title == 'Reports' %}active{% endif %}"><i class="bi bi-bar-chart"></i><span>Reports</span></a>
+        {% endif %}
+    </nav>
+</aside>
+<div class="sidebar-backdrop" data-sidebar-close></div>

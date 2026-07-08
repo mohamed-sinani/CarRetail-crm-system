@@ -1,0 +1,42 @@
+fromdjango.contribimportmessages
+fromdjango.db.modelsimportQ
+fromdjango.urlsimportreverse_lazy
+fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
+fromaccounts.mixinsimportRoleRequiredMixin
+from.formsimportCustomerForm
+from.modelsimportCustomer
+classCustomerListView(RoleRequiredMixin,ListView):
+    allowed_roles=("ADMIN","SALES")
+    model=Customer
+    template_name="contacts.html"
+    context_object_name="customers"
+    defget_queryset(self):
+        queryset=Customer.objects.select_related("assigned_salesperson").all()
+        query=self.request.GET.get("q","")
+        ifquery:
+            queryset=queryset.filter(Q(full_name__icontains=query)|Q(phone__icontains=query)|Q(email__icontains=query))
+        returnqueryset
+    defget_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context["page_title"]="Contacts"
+        context["form"]=CustomerForm()
+        returncontext
+classCustomerCreateView(RoleRequiredMixin,CreateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Customer
+    form_class=CustomerForm
+    success_url=reverse_lazy("customers:list")
+    defform_valid(self,form):
+        messages.success(self.request,"Customer profile saved.")
+        returnsuper().form_valid(form)
+classCustomerUpdateView(RoleRequiredMixin,UpdateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Customer
+    form_class=CustomerForm
+    template_name="form.html"
+    success_url=reverse_lazy("customers:list")
+classCustomerDeleteView(RoleRequiredMixin,DeleteView):
+    allowed_roles=("ADMIN",)
+    model=Customer
+    template_name="confirm_delete.html"
+    success_url=reverse_lazy("customers:list")

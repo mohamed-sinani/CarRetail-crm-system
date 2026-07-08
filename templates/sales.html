@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">Transactions</span><h1>Sales</h1></div>
+    {% if user.is_admin_role or user.is_sales_role %}<button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#saleModal"><i class="bi bi-plus-lg"></i> Record Sale</button>{% endif %}
+</div>
+<section class="panel">
+    <div class="table-responsive">
+        <table class="table crm-table align-middle">
+            <thead><tr><th>Vehicle</th><th>Customer</th><th>Salesperson</th><th>Amount</th><th>Payment</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr><td><strong>{{ sale.vehicle }}</strong></td><td>{{ sale.customer }}</td><td>{{ sale.salesperson|default:"-" }}</td><td>TZS {{ sale.amount|floatformat:0 }}</td><td>{{ sale.get_payment_method_display }}</td><td>{{ sale.sale_date }}</td>
+                    <td class="text-end">{% if user.is_admin_role or user.is_sales_role %}<a class="icon-link" href="{% url 'sales:edit' sale.pk %}"><i class="bi bi-pencil"></i></a>{% endif %}{% if user.is_admin_role %}<a class="icon-link text-danger" href="{% url 'sales:delete' sale.pk %}"><i class="bi bi-trash"></i></a>{% endif %}</td></tr>
+                {% empty %}<tr><td colspan="7" class="empty-state">No sales recorded.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<div class="modal fade" id="saleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <form class="modal-content" method="post" action="{% url 'sales:add' %}">
+            {% csrf_token %}
+            <div class="modal-header"><h5 class="modal-title">Record Sale</h5><button class="btn-close" data-bs-dismiss="modal" type="button"></button></div>
+            <div class="modal-body form-grid">{{ form.as_p }}</div>
+            <div class="modal-footer"><button class="btn btn-accent" type="submit">Save Sale</button></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

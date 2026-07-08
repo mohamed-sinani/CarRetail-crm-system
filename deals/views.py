@@ -1,0 +1,44 @@
+fromdjango.contribimportmessages
+fromdjango.urlsimportreverse_lazy
+fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
+fromaccounts.mixinsimportRoleRequiredMixin
+from.formsimportDealForm
+from.modelsimportDeal
+classDealListView(RoleRequiredMixin,ListView):
+    allowed_roles=("ADMIN","SALES")
+    model=Deal
+    template_name="deals.html"
+    context_object_name="deals"
+    defget_queryset(self):
+        returnDeal.objects.select_related("customer","vehicle","salesperson")
+    defget_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        deals_by_stage={}
+        forkey,labelinDeal.Stage.choices:
+            deals_by_stage[key] = {
+                "label":label,
+                "deals":[dealfordealincontext["deals"]ifdeal.stage==key],
+            }
+        context["page_title"]="Deals"
+        context["form"]=DealForm(initial={"salesperson":self.request.userifself.request.user.role=="SALES"elseNone})
+        context["deals_by_stage"]=deals_by_stage
+        returncontext
+classDealCreateView(RoleRequiredMixin,CreateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Deal
+    form_class=DealForm
+    success_url=reverse_lazy("deals:list")
+    defform_valid(self,form):
+        messages.success(self.request,"Deal added to the pipeline.")
+        returnsuper().form_valid(form)
+classDealUpdateView(RoleRequiredMixin,UpdateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Deal
+    form_class=DealForm
+    template_name="form.html"
+    success_url=reverse_lazy("deals:list")
+classDealDeleteView(RoleRequiredMixin,DeleteView):
+    allowed_roles=("ADMIN",)
+    model=Deal
+    template_name="confirm_delete.html"
+    success_url=reverse_lazy("deals:list")

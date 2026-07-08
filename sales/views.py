@@ -1,0 +1,37 @@
+fromdjango.contribimportmessages
+fromdjango.urlsimportreverse_lazy
+fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
+fromaccounts.mixinsimportRoleRequiredMixin
+from.formsimportSaleForm
+from.modelsimportSale
+classSaleListView(RoleRequiredMixin,ListView):
+    allowed_roles=("ADMIN","SALES")
+    model=Sale
+    template_name="sales.html"
+    context_object_name="sales"
+    defget_queryset(self):
+        returnSale.objects.select_related("vehicle","customer","salesperson")
+    defget_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context["page_title"]="Sales"
+        context["form"]=SaleForm(initial={"salesperson":self.request.userifself.request.user.role=="SALES"elseNone})
+        returncontext
+classSaleCreateView(RoleRequiredMixin,CreateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Sale
+    form_class=SaleForm
+    success_url=reverse_lazy("sales:list")
+    defform_valid(self,form):
+        messages.success(self.request,"Sale recorded and vehicle marked as sold.")
+        returnsuper().form_valid(form)
+classSaleUpdateView(RoleRequiredMixin,UpdateView):
+    allowed_roles=("ADMIN","SALES")
+    model=Sale
+    form_class=SaleForm
+    template_name="form.html"
+    success_url=reverse_lazy("sales:list")
+classSaleDeleteView(RoleRequiredMixin,DeleteView):
+    allowed_roles=("ADMIN",)
+    model=Sale
+    template_name="confirm_delete.html"
+    success_url=reverse_lazy("sales:list")

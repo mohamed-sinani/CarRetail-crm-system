@@ -1,0 +1,18 @@
+fromdjango.contrib.auth.modelsimportAbstractUser
+fromdjango.dbimportmodels
+classUser(AbstractUser):
+    classRole(models.TextChoices):
+        ADMIN="ADMIN","Admin"
+        MARKETING="MARKETING","Marketing"
+        SALES="SALES","Sales"
+    role=models.CharField(max_length=20,choices=Role.choices,default=Role.SALES)
+    phone=models.CharField(max_length=30,blank=True)
+    @property
+    defis_admin_role(self):
+        returnself.role==self.Role.ADMINorself.is_superuser
+    @property
+    defis_marketing_role(self):
+        returnself.role==self.Role.MARKETING
+    @property
+    defis_sales_role(self):
+        returnself.role==self.Role.SALES

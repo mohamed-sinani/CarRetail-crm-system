@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Performance exports</span><h1>Reports</h1></div></div>
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon"><i class="bi bi-car-front"></i></div><div><p>Total Inventory</p><h3>{{ inventory_count }}</h3><span>{{ available_count }} available</span></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="bi bi-receipt"></i></div><div><p>Sales Reports</p><h3>{{ sales_count }}</h3><span>closed transactions</span></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="bi bi-cash-stack"></i></div><div><p>Revenue</p><h3>TZS {{ revenue|floatformat:0 }}</h3><span>all time</span></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="bi bi-file-earmark-arrow-down"></i></div><div><p>Exports</p><h3>PDF/XLS</h3><span>ready</span></div></div>
+</div>
+<section class="panel mt-4">
+    <div class="panel-head"><h2>Generate Reports</h2><span>PDF and Excel exports</span></div>
+    <div class="report-actions">
+        <a class="btn btn-dark" href="{% url 'reports:export' 'sales' 'pdf' %}"><i class="bi bi-filetype-pdf"></i> Sales PDF</a>
+        <a class="btn btn-accent" href="{% url 'reports:export' 'sales' 'xls' %}"><i class="bi bi-filetype-xls"></i> Sales Excel</a>
+        <a class="btn btn-dark" href="{% url 'reports:export' 'inventory' 'pdf' %}"><i class="bi bi-filetype-pdf"></i> Inventory PDF</a>
+        <a class="btn btn-accent" href="{% url 'reports:export' 'revenue' 'xls' %}"><i class="bi bi-filetype-xls"></i> Revenue Excel</a>
+    </div>
+</section>
+<section class="panel mt-4">
+    <div class="panel-head"><h2>Recent Sales</h2></div>
+    <div class="table-responsive">
+        <table class="table crm-table"><thead><tr><th>Vehicle</th><th>Customer</th><th>Amount</th><th>Date</th></tr></thead><tbody>
+            {% for sale in top_sales %}<tr><td>{{ sale.vehicle }}</td><td>{{ sale.customer }}</td><td>TZS {{ sale.amount|floatformat:0 }}</td><td>{{ sale.sale_date }}</td></tr>{% empty %}<tr><td colspan="4" class="empty-state">No report data yet.</td></tr>{% endfor %}
+        </tbody></table>
+    </div>
+</section>
+{% endblock %}

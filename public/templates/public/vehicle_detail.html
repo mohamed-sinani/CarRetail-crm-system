@@ -1,0 +1,96 @@
+{% extends 'public/base_public.html' %}
+{% load static %}
+{% block title %}{{ vehicle.year }} {{ vehicle.brand }} {{ vehicle.model }} – MotoRetail{% endblock %}
+{% block content %}
+
+<section class="py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'public_home' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ vehicle.brand }} {{ vehicle.model }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-5">
+            <div class="col-12 col-lg-7">
+                {% if vehicle.image %}
+                    <img src="{{ vehicle.image.url }}" class="w-100 rounded-4 shadow-sm" alt="{{ vehicle.brand }} {{ vehicle.model }}" style="max-height:450px;object-fit:cover;">
+                {% else %}
+                    <div class="rounded-4 bg-secondary-subtle d-flex align-items-center justify-content-center" style="height:400px;">
+                        <i class="bi bi-camera" style="font-size:5rem;color:#94a3b8;"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-5">
+                <span class="badge bg-success mb-2 px-3 py-2" style="font-size:0.85rem;">
+                    <i class="bi bi-check-circle me-1"></i>{{ vehicle.get_status_display }}
+                </span>
+                <h1 class="display-6 fw-bold mb-1">{{ vehicle.year }} {{ vehicle.brand }} {{ vehicle.model }}</h1>
+                <p class="fs-3 fw-bold text-warning mb-4">TZS {{ vehicle.price|floatformat:0 }}</p>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light">
+                            <small class="text-muted d-block">Mileage</small>
+                            <strong>{{ vehicle.mileage }} km</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light">
+                            <small class="text-muted d-block">Transmission</small>
+                            <strong>{{ vehicle.get_transmission_display }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light">
+                            <small class="text-muted d-block">Fuel Type</small>
+                            <strong>{{ vehicle.get_fuel_type_display }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded-3 bg-light">
+                            <small class="text-muted d-block">Year</small>
+                            <strong>{{ vehicle.year }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="tel:+254700000000" class="btn btn-dark btn-lg rounded-pill py-3">
+                        <i class="bi bi-telephone me-2"></i>Call to Inquire
+                    </a>
+                    <a href="{% url 'public_home' %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Bikes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if related_vehicles %}
+            <hr class="my-5">
+            <h2 class="section-title mb-4">More <span>{{ vehicle.brand }}</span> Bikes</h2>
+            <div class="row g-4">
+                {% for v in related_vehicles %}
+                    <div class="col-6 col-lg-3">
+                        <div class="card vehicle-card h-100">
+                            {% if v.image %}
+                                <img src="{{ v.image.url }}" class="card-img-top" alt="{{ v.brand }} {{ v.model }}" style="height:160px;">
+                            {% else %}
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary-subtle" style="height:160px;">
+                                    <i class="bi bi-camera" style="font-size:2rem;color:#94a3b8;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-1">{{ v.year }} {{ v.model }}</h6>
+                                <p class="price fs-5 mb-2">TZS {{ v.price|floatformat:0 }}</p>
+                                <a href="{% url 'public_vehicle_detail' v.pk %}" class="btn btn-sm w-100">View</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

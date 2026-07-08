@@ -1,0 +1,36 @@
+fromdjango.contribimportmessages
+fromdjango.urlsimportreverse_lazy
+fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
+fromaccounts.mixinsimportRoleRequiredMixin
+from.formsimportAnnouncementForm
+from.modelsimportAnnouncement
+classAnnouncementListView(RoleRequiredMixin,ListView):
+    allowed_roles=("ADMIN","MARKETING")
+    model=Announcement
+    template_name="announcements.html"
+    context_object_name="announcements"
+    defget_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context["page_title"]="Announcement"
+        context["form"]=AnnouncementForm()
+        returncontext
+classAnnouncementCreateView(RoleRequiredMixin,CreateView):
+    allowed_roles=("ADMIN","MARKETING")
+    model=Announcement
+    form_class=AnnouncementForm
+    success_url=reverse_lazy("announcements:list")
+    defform_valid(self,form):
+        form.instance.created_by=self.request.user
+        messages.success(self.request,"Announcement published.")
+        returnsuper().form_valid(form)
+classAnnouncementUpdateView(RoleRequiredMixin,UpdateView):
+    allowed_roles=("ADMIN","MARKETING")
+    model=Announcement
+    form_class=AnnouncementForm
+    template_name="form.html"
+    success_url=reverse_lazy("announcements:list")
+classAnnouncementDeleteView(RoleRequiredMixin,DeleteView):
+    allowed_roles=("ADMIN","MARKETING")
+    model=Announcement
+    template_name="confirm_delete.html"
+    success_url=reverse_lazy("announcements:list")

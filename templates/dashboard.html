@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Dealership overview</span>
+        <h1>Dashboard</h1>
+    </div>
+    <span class="date-pill">{{ today|date:"d M Y" }}</span>
+</div>
+
+<div class="stats-grid">
+    {% for stat in stats %}
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi {{ stat.icon }}"></i></div>
+        <div>
+            <p>{{ stat.title }}</p>
+            <h3>{{ stat.value }}</h3>
+            <span>{{ stat.percent }} this month</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-xl-8">
+        <section class="panel h-100">
+            <div class="panel-head">
+                <h2>Sales Analytics</h2>
+                <span>Monthly revenue</span>
+            </div>
+            <canvas id="salesChart" height="120"></canvas>
+        </section>
+    </div>
+    <div class="col-xl-4">
+        <section class="panel h-100">
+            <div class="panel-head">
+                <h2>Vehicle Status</h2>
+                <span>Inventory mix</span>
+            </div>
+            <canvas id="statusChart" height="190"></canvas>
+        </section>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-xl-7">
+        <section class="panel">
+            <div class="panel-head"><h2>Recent Activities</h2></div>
+            <div class="activity-list">
+                {% for item in activities %}
+                    <div class="activity-item"><span></span><div><strong>{{ item.title }}</strong><small>{{ item.meta }}</small></div></div>
+                {% empty %}
+                    <p class="empty-state">No recent activity yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <div class="col-xl-5">
+        <section class="panel">
+            <div class="panel-head"><h2>Announcements</h2></div>
+            {% for announcement in announcements %}
+                <article class="announcement-mini">
+                    <strong>{{ announcement.title }}</strong>
+                    <p>{{ announcement.message|truncatechars:110 }}</p>
+                </article>
+            {% empty %}
+                <p class="empty-state">No announcements posted.</p>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+
+{{ sales_labels|json_script:"sales-labels" }}
+{{ sales_values|json_script:"sales-values" }}
+{{ vehicle_status_values|json_script:"vehicle-status-values" }}
+{% endblock %}

@@ -1,0 +1,50 @@
+fromdjango.contribimportmessages
+fromdjango.db.modelsimportQ
+fromdjango.urlsimportreverse_lazy
+fromdjango.views.genericimportCreateView,DeleteView,ListView,UpdateView
+fromaccounts.mixinsimportRoleRequiredMixin
+from.formsimportVehicleForm
+from.modelsimportVehicle
+classVehicleListView(RoleRequiredMixin,ListView):
+    allowed_roles=("ADMIN",)
+    model=Vehicle
+    template_name="vehicles.html"
+    context_object_name="vehicles"
+    paginate_by=12
+    defget_queryset(self):
+        queryset=Vehicle.objects.all()
+        query=self.request.GET.get("q","")
+        status=self.request.GET.get("status","")
+        ifquery:
+            queryset=queryset.filter(Q(brand__icontains=query)|Q(model__icontains=query))
+        ifstatus:
+            queryset=queryset.filter(status=status)
+        returnqueryset
+    defget_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context["page_title"]="Vehicles"
+        context["form"]=VehicleForm()
+        context["statuses"]=Vehicle.Status.choices
+        returncontext
+classVehicleCreateView(RoleRequiredMixin,CreateView):
+    allowed_roles=("ADMIN",)
+    model=Vehicle
+    form_class=VehicleForm
+    success_url=reverse_lazy("vehicles:list")
+    defform_valid(self,form):
+        messages.success(self.request,"Vehicle added to inventory.")
+        returnsuper().form_valid(form)
+classVehicleUpdateView(RoleRequiredMixin,UpdateView):
+    allowed_roles=("ADMIN",)
+    model=Vehicle
+    form_class=VehicleForm
+    template_name="form.html"
+    success_url=reverse_lazy("vehicles:list")
+    defform_valid(self,form):
+        messages.success(self.request,"Vehicle updated.")
+        returnsuper().form_valid(form)
+classVehicleDeleteView(RoleRequiredMixin,DeleteView):
+    allowed_roles=("ADMIN",)
+    model=Vehicle
+    template_name="confirm_delete.html"
+    success_url=reverse_lazy("vehicles:list")

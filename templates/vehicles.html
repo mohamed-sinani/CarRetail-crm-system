@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">Inventory</span><h1>Vehicles</h1></div>
+    {% if user.is_admin_role %}<button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#vehicleModal"><i class="bi bi-plus-lg"></i> Add Vehicle</button>{% endif %}
+</div>
+
+<section class="panel">
+    <form class="filter-row" method="get">
+        <input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Search brand or model">
+        <select class="form-select" name="status">
+            <option value="">All statuses</option>
+            {% for key,label in statuses %}<option value="{{ key }}" {% if request.GET.status == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <button class="btn btn-dark" type="submit"><i class="bi bi-funnel"></i> Filter</button>
+    </form>
+    <div class="table-responsive mt-3">
+        <table class="table crm-table align-middle">
+            <thead><tr><th>Vehicle</th><th>Year</th><th>Price</th><th>Mileage</th><th>Transmission</th><th>Fuel</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for vehicle in vehicles %}
+                <tr>
+                    <td><strong>{{ vehicle.brand }} {{ vehicle.model }}</strong></td>
+                    <td>{{ vehicle.year }}</td>
+                    <td>TZS {{ vehicle.price|floatformat:0 }}</td>
+                    <td>{{ vehicle.mileage }} km</td>
+                    <td>{{ vehicle.get_transmission_display }}</td>
+                    <td>{{ vehicle.get_fuel_type_display }}</td>
+                    <td><span class="status-badge {{ vehicle.status|lower }}">{{ vehicle.get_status_display }}</span></td>
+                    <td class="text-end">
+                        {% if user.is_admin_role %}
+                            <a class="icon-link" href="{% url 'vehicles:edit' vehicle.pk %}"><i class="bi bi-pencil"></i></a>
+                            <a class="icon-link text-danger" href="{% url 'vehicles:delete' vehicle.pk %}"><i class="bi bi-trash"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="empty-state">No vehicles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <form class="modal-content" method="post" enctype="multipart/form-data" action="{% url 'vehicles:add' %}">
+            {% csrf_token %}
+            <div class="modal-header"><h5 class="modal-title">Add Vehicle</h5><button class="btn-close" data-bs-dismiss="modal" type="button"></button></div>
+            <div class="modal-body form-grid">{{ form.as_p }}</div>
+            <div class="modal-footer"><button class="btn btn-accent" type="submit">Save Vehicle</button></div>
+        </form>
+    </div>
+</div>
+{% endblock %}
