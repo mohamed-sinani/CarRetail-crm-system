@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from .models import Customer
-class CustomerForm(f or ms.ModelForm):
+class CustomerForm(forms.ModelForm):
     new_salesperson = forms.CharField(
         required=False,
         label="New salesperson",
