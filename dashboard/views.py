@@ -16,6 +16,9 @@ from vehicles.models import Vehicle
 @login_required
 def dashboard_home(request):
     user=request.user
+    if user.role=="CUSTOMER":
+        messages.error(request,"You do not have permission to access that section.")
+        return redirect("public_home")
     if user.role=="SALES":
         sales_count=Sale.objects.filter(salesperson=user).count()
         revenue=Sale.objects.filter(salesperson=user).aggregate(total=Sum("amount"))["total"] or 0
