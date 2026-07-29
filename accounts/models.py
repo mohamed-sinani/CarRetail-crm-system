@@ -5,14 +5,15 @@ class User(AbstractUser):
         ADMIN="ADMIN","Admin"
         MARKETING="MARKETING","Marketing"
         SALES="SALES","Sales"
-    role=models.CharField(max_length=20,choices=Role.choices,default=Role.SALES)
+        CUSTOMER="CUSTOMER","Customer"
+    role=models.CharField(max_length=20,choices=Role.choices,default=Role.CUSTOMER)
     phone=models.CharField(max_length=30,blank=True)
     @property
     def is_admin_role(self):
-        returnself.role==self.Role.ADMINorself.is_superuser
+        return self.role==self.Role.ADMIN or self.is_superuser
     @property
     def is_marketing_role(self):
-        returnself.role==self.Role.MARKETING
+        return self.role==self.Role.MARKETING
     @property
     def is_sales_role(self):
-        returnself.role==self.Role.SALES
+        return self.role==self.Role.SALES
