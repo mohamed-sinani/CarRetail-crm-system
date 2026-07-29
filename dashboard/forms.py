@@ -3,7 +3,7 @@ from .models import MarketingCampaign
 class MarketingCampaignForm(forms.ModelForm):
     class Meta:
         model=MarketingCampaign
-        fields=["title","channel","message","whatsapp_phone","views","replies","leads"]
+        fields=["title","channel","message","link_url","views","replies","leads"]
         widgets = {
             "title":forms.TextInput(attrs={"class":"form-control","placeholder":"Weekend SUV Showcase","maxlength":"140"}),
             "channel":forms.Select(attrs={"class":"form-select"}),
@@ -14,7 +14,7 @@ class MarketingCampaignForm(forms.ModelForm):
                     "placeholder":"Write the promotion text staff will copy to WhatsApp Status, broadcast, Facebook, or Instagram.",
                 }
             ),
-            "whatsapp_phone":forms.TextInput(attrs={"class":"form-control","placeholder":"255XXXXXXXXX"}),
+            "link_url":forms.TextInput(attrs={"class":"form-control","placeholder":"WhatsApp number or Instagram/Facebook URL"}),
             "views":forms.NumberInput(attrs={"class":"form-control","min":0}),
             "replies":forms.NumberInput(attrs={"class":"form-control","min":0}),
             "leads":forms.NumberInput(attrs={"class":"form-control","min":0}),
