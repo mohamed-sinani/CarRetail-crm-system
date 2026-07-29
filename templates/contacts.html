@@ -11,7 +11,7 @@
             <tbody>
                 {% for customer in customers %}
                 <tr>
-                    <td><strong>{{ customer.full_name }}</strong></td><td>{{ customer.phone }}</td><td>{{ customer.email|default:"-" }}</td><td>{{ customer.address|truncatechars:42 }}</td><td>{{ customer.assigned_salesperson|default:"Unassigned" }}</td>
+                    <td><a class="text-decoration-none fw-bold" style="color:var(--dark);" href="{% url 'customers:detail' customer.pk %}">{{ customer.full_name }}</a></td><td>{{ customer.phone }}</td><td>{{ customer.email|default:"-" }}</td><td>{{ customer.address|truncatechars:42 }}</td><td>{{ customer.assigned_salesperson|default:"Unassigned" }}</td>
                     <td class="text-end">
                         {% if user.is_admin_role or user.is_sales_role %}<a class="icon-link" href="{% url 'customers:edit' customer.pk %}"><i class="bi bi-pencil"></i></a>{% endif %}
                         {% if user.is_admin_role %}<a class="icon-link text-danger" href="{% url 'customers:delete' customer.pk %}"><i class="bi bi-trash"></i></a>{% endif %}
