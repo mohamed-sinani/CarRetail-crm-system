@@ -20,5 +20,11 @@ class Sale(models.Model):
         if self.vehicle.status!="SOLD":
             self.vehicle.status="SOLD"
             self.vehicle.save(update_fields=["status","updated_at"])
+    def delete(self,*args,**kwargs):
+        vehicle=self.vehicle
+        super().delete(*args,**kwargs)
+        if vehicle.status=="SOLD":
+            vehicle.status="AVAILABLE"
+            vehicle.save(update_fields=["status","updated_at"])
     def __str__(self):
         return f"{self.vehicle} sold to {self.customer}"
