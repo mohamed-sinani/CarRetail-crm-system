@@ -15,12 +15,12 @@ class CustomerListView(RoleRequiredMixin,ListView):
         query=self.request.GET.get("q","")
         if query:
             queryset=queryset.filter(Q(full_name__icontains=query)|Q(phone__icontains=query)|Q(email__icontains=query))
-        returnqueryset
+        return queryset
     def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Contacts"
         context["form"]=CustomerForm()
-        returncontext
+        return context
 class CustomerCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
@@ -28,7 +28,7 @@ class CustomerCreateView(RoleRequiredMixin,CreateView):
     success_url=reverse_lazy("customers:list")
     def form_valid(self,form):
         messages.success(self.request,"Customer profile saved.")
-        returnsuper().form_valid(form)
+        return super().form_valid(form)
 class CustomerUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
