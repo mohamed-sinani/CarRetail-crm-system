@@ -85,6 +85,8 @@
                         {% if item.whatsapp_link %}
                             <a class="btn btn-accent btn-sm" href="{{ item.whatsapp_link }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Open WhatsApp</a>
                         {% endif %}
+                        <a class="btn btn-outline-secondary btn-sm" href="{% url 'dashboard:campaign_edit' campaign.pk %}"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-outline-danger btn-sm" href="{% url 'dashboard:campaign_delete' campaign.pk %}"><i class="bi bi-trash"></i></a>
                     </div>
                 </article>
                 {% endwith %}
