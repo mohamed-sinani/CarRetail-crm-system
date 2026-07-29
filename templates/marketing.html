@@ -38,10 +38,10 @@
                     {{ form.message.errors }}
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="{{ form.whatsapp_phone.id_for_label }}">WhatsApp number</label>
-                    {{ form.whatsapp_phone }}
-                    <div class="form-text">Optional. Use international format, for example 255XXXXXXXXX.</div>
-                    {{ form.whatsapp_phone.errors }}
+                    <label class="form-label" for="{{ form.link_url.id_for_label }}">Campaign Link</label>
+                    {{ form.link_url }}
+                    <div class="form-text">For WhatsApp: phone number. For Instagram/Facebook: full URL.</div>
+                    {{ form.link_url.errors }}
                 </div>
                 <div class="campaign-metrics">
                     <div>
@@ -82,9 +82,7 @@
                     </div>
                     <div class="report-actions mt-3">
                         <button class="btn btn-dark btn-sm" type="button" data-copy-text="{{ campaign.message }}"><i class="bi bi-clipboard"></i> Copy Text</button>
-                        {% if item.whatsapp_link %}
-                            <a class="btn btn-accent btn-sm" href="{{ item.whatsapp_link }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Open WhatsApp</a>
-                        {% endif %}
+                        <a class="btn btn-accent btn-sm" href="{% url 'dashboard:track_campaign' campaign.pk %}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> Open</a>
                         <a class="btn btn-outline-secondary btn-sm" href="{% url 'dashboard:campaign_edit' campaign.pk %}"><i class="bi bi-pencil"></i></a>
                         <a class="btn btn-outline-danger btn-sm" href="{% url 'dashboard:campaign_delete' campaign.pk %}"><i class="bi bi-trash"></i></a>
                     </div>
