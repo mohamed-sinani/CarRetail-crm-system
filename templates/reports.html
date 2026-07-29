@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">Performance exports</span><h1>Reports</h1></div></div>
 <div class="stats-grid">
     <div class="stat-card"><div class="stat-icon"><i class="bi bi-car-front"></i></div><div><p>Total Inventory</p><h3>{{ inventory_count }}</h3><span>{{ available_count }} available</span></div></div>
     <div class="stat-card"><div class="stat-icon"><i class="bi bi-receipt"></i></div><div><p>Sales Reports</p><h3>{{ sales_count }}</h3><span>closed transactions</span></div></div>
-    <div class="stat-card"><div class="stat-icon"><i class="bi bi-cash-stack"></i></div><div><p>Revenue</p><h3>TZS {{ revenue|floatformat:0 }}</h3><span>all time</span></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="bi bi-cash-stack"></i></div><div><p>Revenue</p><h3>TZS {{ revenue|floatformat:0|intcomma }}</h3><span>all time</span></div></div>
     <div class="stat-card"><div class="stat-icon"><i class="bi bi-file-earmark-arrow-down"></i></div><div><p>Exports</p><h3>PDF/XLS</h3><span>ready</span></div></div>
 </div>
 <section class="panel mt-4">
@@ -20,7 +21,7 @@
     <div class="panel-head"><h2>Recent Sales</h2></div>
     <div class="table-responsive">
         <table class="table crm-table"><thead><tr><th>Vehicle</th><th>Customer</th><th>Amount</th><th>Date</th></tr></thead><tbody>
-            {% for sale in top_sales %}<tr><td>{{ sale.vehicle }}</td><td>{{ sale.customer }}</td><td>TZS {{ sale.amount|floatformat:0 }}</td><td>{{ sale.sale_date }}</td></tr>{% empty %}<tr><td colspan="4" class="empty-state">No report data yet.</td></tr>{% endfor %}
+            {% for sale in top_sales %}<tr><td>{{ sale.vehicle }}</td><td>{{ sale.customer }}</td><td>TZS {{ sale.amount|floatformat:0|intcomma }}</td><td>{{ sale.sale_date }}</td></tr>{% empty %}<tr><td colspan="4" class="empty-state">No report data yet.</td></tr>{% endfor %}
         </tbody></table>
     </div>
 </section>

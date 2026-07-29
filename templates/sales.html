@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
 <div class="page-heading">
     <div><span class="eyebrow">Transactions</span><h1>Sales</h1></div>
@@ -10,7 +11,7 @@
             <thead><tr><th>Vehicle</th><th>Customer</th><th>Salesperson</th><th>Amount</th><th>Payment</th><th>Date</th><th></th></tr></thead>
             <tbody>
                 {% for sale in sales %}
-                <tr><td><strong>{{ sale.vehicle }}</strong></td><td>{{ sale.customer }}</td><td>{{ sale.salesperson|default:"-" }}</td><td>TZS {{ sale.amount|floatformat:0 }}</td><td>{{ sale.get_payment_method_display }}</td><td>{{ sale.sale_date }}</td>
+                <tr><td><strong>{{ sale.vehicle }}</strong></td><td>{{ sale.customer }}</td><td>{{ sale.salesperson|default:"-" }}</td><td>TZS {{ sale.amount|floatformat:0|intcomma }}</td><td>{{ sale.get_payment_method_display }}</td><td>{{ sale.sale_date }}</td>
                     <td class="text-end">{% if user.is_admin_role or user.is_sales_role %}<a class="icon-link" href="{% url 'sales:edit' sale.pk %}"><i class="bi bi-pencil"></i></a>{% endif %}{% if user.is_admin_role %}<a class="icon-link text-danger" href="{% url 'sales:delete' sale.pk %}"><i class="bi bi-trash"></i></a>{% endif %}</td></tr>
                 {% empty %}<tr><td colspan="7" class="empty-state">No sales recorded.</td></tr>{% endfor %}
             </tbody>

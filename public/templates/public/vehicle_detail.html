@@ -1,5 +1,5 @@
 {% extends 'public/base_public.html' %}
-{% load static %}
+{% load static humanize %}
 {% block title %}{{ vehicle.year }} {{ vehicle.brand }} {{ vehicle.model }} – MotoRetail{% endblock %}
 {% block content %}
 
@@ -27,7 +27,7 @@
                     <i class="bi bi-check-circle me-1"></i>{{ vehicle.get_status_display }}
                 </span>
                 <h1 class="display-6 fw-bold mb-1">{{ vehicle.year }} {{ vehicle.brand }} {{ vehicle.model }}</h1>
-                <p class="fs-3 fw-bold text-warning mb-4">TZS {{ vehicle.price|floatformat:0 }}</p>
+                <p class="fs-3 fw-bold text-warning mb-4">TZS {{ vehicle.price|floatformat:0|intcomma }}</p>
 
                 <div class="row g-3 mb-4">
                     <div class="col-6">
@@ -96,7 +96,7 @@
                             {% endif %}
                             <div class="card-body">
                                 <h6 class="fw-bold mb-1">{{ v.year }} {{ v.model }}</h6>
-                                <p class="price fs-5 mb-2">TZS {{ v.price|floatformat:0 }}</p>
+                                <p class="price fs-5 mb-2">TZS {{ v.price|floatformat:0|intcomma }}</p>
                                 <a href="{% url 'public_vehicle_detail' v.pk %}" class="btn btn-sm w-100">View</a>
                             </div>
                         </div>

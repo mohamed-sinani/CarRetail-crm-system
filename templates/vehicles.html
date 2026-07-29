@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
 <div class="page-heading">
     <div><span class="eyebrow">Inventory</span><h1>Vehicles</h1></div>
@@ -22,7 +23,7 @@
                 <tr>
                     <td><strong>{{ vehicle.brand }} {{ vehicle.model }}</strong></td>
                     <td>{{ vehicle.year }}</td>
-                    <td>TZS {{ vehicle.price|floatformat:0 }}</td>
+                    <td>TZS {{ vehicle.price|floatformat:0|intcomma }}</td>
                     <td>{{ vehicle.mileage }} km</td>
                     <td>{{ vehicle.get_transmission_display }}</td>
                     <td>{{ vehicle.get_fuel_type_display }}</td>
