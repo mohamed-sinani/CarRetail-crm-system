@@ -8,7 +8,7 @@ from .models import ChatSession,ChatMessage
 
 @login_required
 def chat_list(request):
-    qs=ChatSession.objects.select_related("vehicle","customer","assigned_to").prefetch_related("messages")
+    qs=ChatSession.objects.filter(customer__role="CUSTOMER").select_related("vehicle","customer","assigned_to").prefetch_related("messages")
     tab=request.GET.get("tab","active")
     if tab=="active":
         qs=qs.filter(status=ChatSession.Status.ACTIVE)
