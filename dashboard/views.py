@@ -1,8 +1,9 @@
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count,Sum
 from django.db.models.functions import TruncMonth
-from django.shortcuts import redirect,render
+from django.shortcuts import get_object_or_404,redirect,render
 from django.utils import timezone
 from urllib.parse import quote
 from announcements.models import Announcement
@@ -70,6 +71,19 @@ def dashboard_home(request):
         sales_labels=["Jan","Feb","Mar","Apr","May","Jun"]
         sales_values=[18000,22000,19500,28000,31000,36000]
     status_map={item["status"]:item["total"]for item in status_counts}
+    now=timezone.now()
+    first_of_month=now.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    last_month_start=(first_of_month-timedelta(days=1)).replace(day=1)
+    def pct(current,prev):
+        if not prev:
+            return "0%"
+        change=((current-prev)/prev)*100
+        sign="+"if change>=0 else ""
+        return f"{sign}{change:.0f}%"
+    prev_revenue=Sale.objects.filter(sale_date__lt=first_of_month).aggregate(total=Sum("amount"))["total"]or 0
+    prev_deals=Deal.objects.filter(updated_at__lt=first_of_month).count()
+    prev_vehicles=Vehicle.objects.filter(created_at__lt=first_of_month).count()if hasattr(Vehicle,"created_at")else 0
+    prev_contacts=Customer.objects.filter(created_at__lt=first_of_month).count()if hasattr(Customer,"created_at")else 0
     activities = [
         {"title":f"Sold {sale.vehicle}","meta":f"{sale.customer} - {sale.sale_date:%d %b %Y}"}
         for sale in recent_sales
@@ -81,10 +95,10 @@ def dashboard_home(request):
     context = {
         "page_title":"Dashboard",
         "stats": [
-            {"title":"Sales / Revenue","value":f"{sales_count} / TZS {revenue:,.0f}","percent":"+18%","icon":"bi-cash-stack"},
-            {"title":"Active Deals","value":active_deals,"percent":"+5%","icon":"bi-kanban"},
-            {"title":"Total Vehicles","value":total_vehicles,"percent":"+12%","icon":"bi-car-front"},
-            {"title":"Contacts","value":contacts_count,"percent":"+8%","icon":"bi-people"},
+            {"title":"Sales / Revenue","value":f"{sales_count} / TZS {revenue:,.0f}","percent":pct(revenue,prev_revenue),"icon":"bi-cash-stack"},
+            {"title":"Active Deals","value":active_deals,"percent":pct(active_deals,prev_deals),"icon":"bi-kanban"},
+            {"title":"Total Vehicles","value":total_vehicles,"percent":pct(total_vehicles,prev_vehicles),"icon":"bi-car-front"},
+            {"title":"Contacts","value":contacts_count,"percent":pct(contacts_count,prev_contacts),"icon":"bi-people"},
         ],
         "sales_labels":sales_labels,
         "sales_values":sales_values,
@@ -102,13 +116,13 @@ def dashboard_home(request):
 def marketing_home(request):
     if request.user.role not in ("ADMIN","MARKETING") and not request.user.is_superuser:
         messages.error(request,"You do not have permission to access marketing.")
-        returnredirect("dashboard:home")
+        return redirect("dashboard:home")
     if request.method=="POST":
         form=MarketingCampaignForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request,"Marketing campaign saved.")
-            returnredirect("dashboard:marketing")
+            return redirect("dashboard:marketing")
     else:
         form=MarketingCampaignForm()
     campaigns=[]
@@ -116,7 +130,8 @@ def marketing_home(request):
         whatsapp_link=""
         if campaign.whatsapp_phone:
             phone="".join(char for char in campaign.whatsapp_phone if char.isdigit())
-            whatsapp_link=f"https://wa.me/{phone}?text={quote(campaign.message)}"
+            if phone:
+                whatsapp_link=f"https://wa.me/{phone}?text={quote(campaign.message)}"
         campaigns.append({"campaign":campaign,"whatsapp_link":whatsapp_link})
     context = {
         "page_title":"Marketing",
@@ -129,3 +144,29 @@ def marketing_home(request):
         "announcements":Announcement.objects.all()[:3],
     }
     return render(request,"marketing.html",context)
+@login_required
+def campaign_edit(request,pk):
+    if request.user.role not in ("ADMIN","MARKETING") and not request.user.is_superuser:
+        messages.error(request,"You do not have permission.")
+        return redirect("dashboard:home")
+    campaign=get_object_or_404(MarketingCampaign,pk=pk)
+    if request.method=="POST":
+        form=MarketingCampaignForm(request.POST,instance=campaign)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Campaign updated.")
+            return redirect("dashboard:marketing")
+    else:
+        form=MarketingCampaignForm(instance=campaign)
+    return render(request,"form.html",{"form":form,"page_title":"Edit Campaign","object":campaign})
+@login_required
+def campaign_delete(request,pk):
+    if request.user.role not in ("ADMIN","MARKETING") and not request.user.is_superuser:
+        messages.error(request,"You do not have permission.")
+        return redirect("dashboard:home")
+    campaign=get_object_or_404(MarketingCampaign,pk=pk)
+    if request.method=="POST":
+        campaign.delete()
+        messages.success(request,"Campaign deleted.")
+        return redirect("dashboard:marketing")
+    return render(request,"confirm_delete.html",{"object":campaign,"page_title":"Delete Campaign"})
