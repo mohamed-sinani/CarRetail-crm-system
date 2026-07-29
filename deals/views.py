@@ -22,7 +22,7 @@ class DealListView(RoleRequiredMixin,ListView):
         context["page_title"]="Deals"
         context["form"]=DealForm(initial={"salesperson":self.request.user if self.request.user.role=="SALES" else None})
         context["deals_by_stage"]=deals_by_stage
-        returncontext
+        return context
 class DealCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Deal
