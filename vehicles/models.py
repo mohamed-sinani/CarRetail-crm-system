@@ -21,7 +21,7 @@ class Vehicle(models.Model):
     transmission=models.CharField(max_length=20,choices=Transmission.choices)
     fuel_type=models.CharField(max_length=20,choices=FuelType.choices)
     status=models.CharField(max_length=20,choices=Status.choices,default=Status.AVAILABLE)
-    image=models.FileField(upload_to="vehicles/",blank=True,null=True)
+    image=models.ImageField(upload_to="vehicles/",blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     class Meta:
