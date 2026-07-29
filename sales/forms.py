@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from vehicles.models import Vehicle
 from .models import Sale
 class SaleForm(forms.ModelForm):
     class Meta:
@@ -20,4 +21,7 @@ class SaleForm(forms.ModelForm):
             "first_name",
             "last_name",
             "username",
+        )
+        self.fields["vehicle"].queryset = Vehicle.objects.exclude(status=Vehicle.Status.SOLD).order_by(
+            "brand","model","-year"
         )
