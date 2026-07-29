@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Customer profile</span>
+        <h1>{{ customer.full_name }}</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'customers:edit' customer.pk %}"><i class="bi bi-pencil"></i> Edit</a>
+        <a class="btn btn-outline-danger btn-sm" href="{% url 'customers:delete' customer.pk %}"><i class="bi bi-trash"></i></a>
+    </div>
+</div>
+
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+        <div>
+            <p>Total Spent</p>
+            <h3>TZS {{ customer.total_spent|floatformat:0|intcomma }}</h3>
+            <span>from completed sales</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-kanban"></i></div>
+        <div>
+            <p>Deals Pipeline</p>
+            <h3>TZS {{ customer.total_deals_value|floatformat:0|intcomma }}</h3>
+            <span>expected value</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
+        <div>
+            <p>Total Customer Value</p>
+            <h3>TZS {{ customer.total_value|floatformat:0|intcomma }}</h3>
+            <span>spent + pipeline</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-currency-exchange"></i></div>
+        <div>
+            <p>Transactions</p>
+            <h3>{{ sales|length }}</h3>
+            <span>{{ deals|length }} active deal{{ deals|length|pluralize }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-4">
+        <section class="panel">
+            <div class="panel-head"><h2>Contact Info</h2></div>
+            <table class="table crm-table">
+                <tr><th class="text-muted" style="font-size:.82rem;">Phone</th><td>{{ customer.phone }}</td></tr>
+                <tr><th class="text-muted" style="font-size:.82rem;">Email</th><td>{{ customer.email|default:"-" }}</td></tr>
+                <tr><th class="text-muted" style="font-size:.82rem;">Address</th><td>{{ customer.address|default:"-" }}</td></tr>
+                <tr><th class="text-muted" style="font-size:.82rem;">Salesperson</th><td>{{ customer.assigned_salesperson|default:"Unassigned" }}</td></tr>
+                <tr><th class="text-muted" style="font-size:.82rem;">Customer since</th><td>{{ customer.created_at|date:"d M Y" }}</td></tr>
+            </table>
+        </section>
+    </div>
+
+    <div class="col-xl-8">
+        <section class="panel">
+            <div class="panel-head"><h2>Deals ({{ deals|length }})</h2></div>
+            <div class="table-responsive">
+                <table class="table crm-table align-middle">
+                    <thead><tr><th>Vehicle</th><th>Stage</th><th>Value</th><th>Salesperson</th></tr></thead>
+                    <tbody>
+                        {% for deal in deals %}
+                        <tr>
+                            <td><strong>{{ deal.vehicle }}</strong></td>
+                            <td><span class="status-badge {% if deal.stage == 'CLOSED_WON' %}sold{% elif deal.stage == 'CLOSED_LOST' %}sold{% else %}available{% endif %}">{{ deal.get_stage_display }}</span></td>
+                            <td>TZS {{ deal.expected_value|floatformat:0|intcomma }}</td>
+                            <td>{{ deal.salesperson|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="empty-state">No deals for this customer.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel mt-4">
+            <div class="panel-head"><h2>Sales ({{ sales|length }})</h2></div>
+            <div class="table-responsive">
+                <table class="table crm-table align-middle">
+                    <thead><tr><th>Vehicle</th><th>Amount</th><th>Payment</th><th>Date</th><th>Salesperson</th></tr></thead>
+                    <tbody>
+                        {% for sale in sales %}
+                        <tr>
+                            <td><strong>{{ sale.vehicle }}</strong></td>
+                            <td>TZS {{ sale.amount|floatformat:0|intcomma }}</td>
+                            <td>{{ sale.get_payment_method_display }}</td>
+                            <td>{{ sale.sale_date|date:"d M Y" }}</td>
+                            <td>{{ sale.salesperson|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="empty-state">No sales for this customer.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
