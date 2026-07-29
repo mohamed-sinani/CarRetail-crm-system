@@ -14,6 +14,7 @@ urlpatterns = [
     path('sales/',include('sales.urls')),
     path('announcements/',include('announcements.urls')),
     path('reports/',include('reports.urls')),
+    path('messages/',include('inbox.urls')),
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
