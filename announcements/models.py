@@ -8,4 +8,4 @@ class Announcement(models.Model):
     class Meta:
         ordering=["-created_at"]
     def __str__(self):
-        returnself.title
+        return self.title
