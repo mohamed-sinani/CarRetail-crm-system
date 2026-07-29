@@ -5,6 +5,7 @@
     </div>
     <nav class="sidebar-nav">
         <a href="{% url 'dashboard:home' %}" class="{% if page_title == 'Dashboard' %}active{% endif %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+        <a href="{% url 'inbox:list' %}" class="{% if page_title == 'Chats' %}active{% endif %}"><i class="bi bi-chat-dots"></i><span>Live Chat</span></a>
         {% if user.role == 'ADMIN' or user.role == 'SALES' %}
         <a href="{% url 'sales:list' %}" class="{% if page_title == 'Sales' %}active{% endif %}"><i class="bi bi-receipt"></i><span>Sales</span></a>
         <a href="{% url 'deals:list' %}" class="{% if page_title == 'Deals' %}active{% endif %}"><i class="bi bi-kanban"></i><span>Deals</span></a>
