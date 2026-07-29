@@ -15,7 +15,7 @@ class SaleListView(RoleRequiredMixin,ListView):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Sales"
         context["form"]=SaleForm(initial={"salesperson":self.request.user if self.request.user.role=="SALES" else None})
-        returncontext
+        return context
 class SaleCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Sale
