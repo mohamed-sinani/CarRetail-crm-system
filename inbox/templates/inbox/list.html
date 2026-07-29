@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">Customer communication</span>
+        <h1>Live Chats</h1>
+    </div>
+</div>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'active' %}active{% endif %}" href="{% url 'inbox:list' %}?tab=active">Active</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if tab == 'closed' %}active{% endif %}" href="{% url 'inbox:list' %}?tab=closed">Closed</a>
+    </li>
+</ul>
+
+<section class="panel">
+    {% for s in sessions %}
+    <div class="d-flex align-items-start gap-3 p-3 border-bottom">
+        <div class="avatar-sm bg-dark text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px">
+            {{ s.customer.username|first|upper }}
+        </div>
+        <div class="flex-grow-1 min-w-0">
+            <div class="d-flex justify-content-between">
+                <strong>{{ s.customer.username }}</strong>
+                <small class="text-muted">{{ s.updated_at|date:"d M H:i" }}</small>
+            </div>
+            <small class="text-muted">
+                {{ s.customer.email }}
+                {% if s.customer.phone %} · {{ s.customer.phone }}{% endif %}
+                · {{ s.vehicle }}
+            </small>
+            {% with last_msg=s.messages.last %}
+                {% if last_msg %}
+                    <p class="mb-0 text-truncate small">{{ last_msg.sender.username }}: {{ last_msg.message|truncatechars:100 }}</p>
+                {% endif %}
+            {% endwith %}
+            <a href="{% url 'inbox:detail' s.pk %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% empty %}
+    <p class="empty-state mb-0">No chat sessions yet.</p>
+    {% endfor %}
+</section>
+{% endblock %}
