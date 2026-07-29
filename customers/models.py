@@ -17,4 +17,4 @@ class Customer(models.Model):
     class Meta:
         ordering=["full_name"]
     def __str__(self):
-        returnself.full_name
+        return self.full_name
