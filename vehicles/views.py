@@ -19,13 +19,13 @@ class VehicleListView(RoleRequiredMixin,ListView):
             queryset=queryset.filter(Q(brand__icontains=query)|Q(model__icontains=query))
         if status:
             queryset=queryset.filter(status=status)
-        returnqueryset
+        return queryset
     def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context["page_title"]="Vehicles"
         context["form"]=VehicleForm()
         context["statuses"]=Vehicle.Status.choices
-        returncontext
+        return context
 class VehicleCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN",)
     model=Vehicle
@@ -33,7 +33,7 @@ class VehicleCreateView(RoleRequiredMixin,CreateView):
     success_url=reverse_lazy("vehicles:list")
     def form_valid(self,form):
         messages.success(self.request,"Vehicle added to inventory.")
-        returnsuper().form_valid(form)
+        return super().form_valid(form)
 class VehicleUpdateView(RoleRequiredMixin,UpdateView):
     allowed_roles=("ADMIN",)
     model=Vehicle
@@ -42,7 +42,7 @@ class VehicleUpdateView(RoleRequiredMixin,UpdateView):
     success_url=reverse_lazy("vehicles:list")
     def form_valid(self,form):
         messages.success(self.request,"Vehicle updated.")
-        returnsuper().form_valid(form)
+        return super().form_valid(form)
 class VehicleDeleteView(RoleRequiredMixin,DeleteView):
     allowed_roles=("ADMIN",)
     model=Vehicle
