@@ -102,6 +102,8 @@ async function sendMessage(){
             body:JSON.stringify({session_id:sessionId,message:text}),
         });
         if(!resp.ok) throw new Error(await resp.text());
+        const data=await resp.json();
+        lastId=data.id;
     }catch(e){console.error("Send failed",e)}
 }
 
