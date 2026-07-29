@@ -130,12 +130,7 @@ def marketing_home(request):
         form=MarketingCampaignForm()
     campaigns=[]
     for campaign in MarketingCampaign.objects.all():
-        whatsapp_link=""
-        if campaign.whatsapp_phone:
-            phone="".join(char for char in campaign.whatsapp_phone if char.isdigit())
-            if phone:
-                whatsapp_link=f"https://wa.me/{phone}?text={quote(campaign.message)}"
-        campaigns.append({"campaign":campaign,"whatsapp_link":whatsapp_link})
+        campaigns.append({"campaign":campaign})
     context = {
         "page_title":"Marketing",
         "form":form,
@@ -147,6 +142,22 @@ def marketing_home(request):
         "announcements":Announcement.objects.all()[:3],
     }
     return render(request,"marketing.html",context)
+
+@login_required
+def track_campaign_click(request, pk):
+    campaign=get_object_or_404(MarketingCampaign,pk=pk)
+    campaign.views+=1
+    campaign.save(update_fields=["views"])
+    if campaign.channel in (MarketingCampaign.Channel.WHATSAPP_STATUS,MarketingCampaign.Channel.WHATSAPP_BROADCAST):
+        phone="".join(char for char in (campaign.link_url or "") if char.isdigit())
+        if campaign.channel==MarketingCampaign.Channel.WHATSAPP_STATUS and not phone:
+            phone="".join(char for char in "0763364721" if char.isdigit())
+        if phone:
+            return redirect(f"https://wa.me/{phone}?text={quote(campaign.message)}")
+    elif campaign.link_url:
+        return redirect(campaign.link_url)
+    messages.info(request,"No link configured for this campaign.")
+    return redirect("dashboard:marketing")
 @login_required
 def campaign_edit(request,pk):
     if request.user.role not in ("ADMIN","MARKETING") and not request.user.is_superuser:
