@@ -92,6 +92,13 @@ def customer_logout(request):
 @login_required
 def chat_room(request,pk):
     vehicle=get_object_or_404(Vehicle,pk=pk,status=Vehicle.Status.AVAILABLE)
+    if request.user.role!=User.Role.CUSTOMER:
+        from inbox.models import ChatSession
+        session=ChatSession.objects.filter(vehicle=vehicle,customer__role=User.Role.CUSTOMER).first()
+        if session:
+            return redirect("inbox:detail",pk=session.pk)
+        messages.info(request,"No customer has started a chat for this vehicle yet.")
+        return redirect("inbox:list")
     session,created=ChatSession.objects.get_or_create(
         vehicle=vehicle,customer=request.user,
         defaults={"status":ChatSession.Status.ACTIVE},
