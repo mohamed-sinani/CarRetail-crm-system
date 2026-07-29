@@ -89,11 +89,11 @@ def customer_logout(request):
     logout(request)
     return redirect("public_home")
 
-@login_required
+@login_required(login_url="public_login")
 def chat_room(request,pk):
+    from inbox.models import ChatSession
     vehicle=get_object_or_404(Vehicle,pk=pk,status=Vehicle.Status.AVAILABLE)
     if request.user.role!=User.Role.CUSTOMER:
-        from inbox.models import ChatSession
         session=ChatSession.objects.filter(vehicle=vehicle,customer__role=User.Role.CUSTOMER).first()
         if session:
             return redirect("inbox:detail",pk=session.pk)
