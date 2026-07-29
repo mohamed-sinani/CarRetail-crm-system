@@ -1,7 +1,7 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q,Sum
 from django.urls import reverse_lazy
-from django.views.generic import CreateView,DeleteView,ListView,UpdateView
+from django.views.generic import CreateView,DeleteView,DetailView,ListView,UpdateView
 from accounts.mixins import RoleRequiredMixin
 from .forms import CustomerForm
 from .models import Customer
@@ -21,6 +21,19 @@ class CustomerListView(RoleRequiredMixin,ListView):
         context["page_title"]="Contacts"
         context["form"]=CustomerForm()
         return context
+class CustomerDetailView(RoleRequiredMixin,DetailView):
+    allowed_roles=("ADMIN","SALES")
+    model=Customer
+    template_name="customer_profile.html"
+    context_object_name="customer"
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        customer=self.object
+        context["page_title"]=customer.full_name
+        context["deals"]=customer.deals.select_related("vehicle","salesperson").all()
+        context["sales"]=customer.sales.select_related("vehicle","salesperson").all()
+        return context
+
 class CustomerCreateView(RoleRequiredMixin,CreateView):
     allowed_roles=("ADMIN","SALES")
     model=Customer
