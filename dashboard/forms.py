@@ -5,7 +5,7 @@ class MarketingCampaignForm(forms.ModelForm):
         model=MarketingCampaign
         fields=["title","channel","message","whatsapp_phone","views","replies","leads"]
         widgets = {
-            "title":forms.TextInput(attrs={"class":"form-control","placeholder":"Weekend SUV Showcase"}),
+            "title":forms.TextInput(attrs={"class":"form-control","placeholder":"Weekend SUV Showcase","maxlength":"140"}),
             "channel":forms.Select(attrs={"class":"form-select"}),
             "message": forms.Textarea(
                 attrs={
