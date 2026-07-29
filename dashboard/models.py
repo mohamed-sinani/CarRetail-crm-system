@@ -8,10 +8,10 @@ class MarketingCampaign(models.Model):
     title=models.CharField(max_length=140)
     channel=models.CharField(max_length=30,choices=Channel.choices)
     message=models.TextField()
-    whatsapp_phone = models.CharField(
-        max_length=30,
+    link_url = models.CharField(
+        max_length=200,
         blank=True,
-        help_text="Optional number for a click-to-WhatsApp link.",
+        help_text="For WhatsApp: phone number (e.g. 2557XXXXXXXX). For Instagram/Facebook: full URL.",
     )
     views=models.PositiveIntegerField(default=0)
     replies=models.PositiveIntegerField(default=0)
