@@ -11,4 +11,4 @@ class ReportSnapshot(models.Model):
     class Meta:
         ordering=["-generated_at"]
     def __str__(self):
-        returnself.title
+        return self.title
